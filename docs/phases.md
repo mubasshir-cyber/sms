@@ -48,76 +48,76 @@ Dashboard core         Complaints & gates       Complete analytics
 ### Phase 1 — Feature Detail
 
 #### ✅ Tenant & Society Management
-- [ ] Multi-tenant architecture setup
-- [ ] Society registration & onboarding wizard
-- [ ] Society profile (name, address, registration, GST, logo)
-- [ ] Plan / subscription management
+- [x] Multi-tenant architecture setup
+- [x] Society registration & onboarding wizard
+- [x] Society profile (name, address, registration, GST, logo)
+- [x] Plan / subscription management
 
 #### ✅ Authentication & Users
-- [ ] Email + password login
-- [ ] Mobile OTP login
-- [ ] JWT token management
-- [ ] Password reset via email/SMS
-- [ ] User profile management
+- [x] Email + password login
+- [x] Mobile OTP login (mockable via service)
+- [x] JWT token management (access + refresh rotation)
+- [x] Password reset via email/SMS
+- [x] User profile management
 
 #### ✅ Roles & Permissions
-- [ ] Role definitions: `super_admin`, `society_admin`, `accountant`, `resident`, `tenant`
-- [ ] Module-level RBAC enforcement
-- [ ] Data scope: society-level isolation
+- [x] Role definitions: `super_admin`, `society_admin`, `accountant`, `resident`, `tenant`
+- [x] Module-level RBAC enforcement (`@Roles`, `RolesGuard`)
+- [x] Data scope: society-level isolation (`ScopeGuard`, tenant isolation)
 
 #### ✅ Society Structure
-- [ ] Society → Tower → Floor → Unit hierarchy
-- [ ] Unit types (1BHK, 2BHK, 3BHK, etc.)
-- [ ] Common areas definition
-- [ ] Bulk unit import (CSV)
+- [x] Society → Tower → Floor → Unit hierarchy
+- [x] Unit types (1BHK, 2BHK, 3BHK, etc.)
+- [x] Common areas definition & unit status tracking
+- [x] Bulk unit import (CSV with strict validation)
 
 #### ✅ Resident & Family Management
-- [ ] Owner & tenant registration
-- [ ] Family member management
-- [ ] Emergency contacts
-- [ ] Basic document upload (ID proof, agreement)
-- [ ] Resident directory
-- [ ] Occupancy history per unit
+- [x] Owner & tenant registration
+- [x] Family member management
+- [x] Emergency contacts
+- [x] Basic document upload & receipt URLs
+- [x] Resident directory
+- [x] Occupancy history per unit & auto unit status sync
 
 #### ✅ Maintenance & Billing
-- [ ] Maintenance rule builder (per unit type / sq. ft.)
-- [ ] Multiple charge heads
-- [ ] Billing cycle configuration
-- [ ] Automatic monthly invoice generation
-- [ ] Late fee configuration (flat / %)
-- [ ] Discount & waiver management
-- [ ] Invoice PDF export
-- [ ] Bulk invoice generation
+- [x] Maintenance rule builder (per unit type / sq. ft. / fixed)
+- [x] Multiple charge heads
+- [x] Billing cycle configuration
+- [x] Automatic monthly invoice generation (BullMQ)
+- [x] Late fee configuration (flat / %)
+- [x] Discount & waiver management
+- [x] Invoice PDF export (PDFKit)
+- [x] Bulk invoice generation
 
 #### ✅ Payments & Receipts
-- [ ] Payment gateway integration (Razorpay / Cashfree)
-- [ ] UPI, Cards, Net Banking support
-- [ ] Cash / Cheque manual entry
-- [ ] Automatic receipt PDF generation
-- [ ] Payment reconciliation
-- [ ] Outstanding dues dashboard
-- [ ] Payment confirmation notifications
+- [x] Payment gateway integration (Razorpay with mock mode)
+- [x] UPI, Cards, Net Banking support
+- [x] Cash / Cheque manual entry
+- [x] Automatic receipt PDF generation
+- [x] Payment reconciliation & invoice status sync
+- [x] Outstanding dues dashboard
+- [x] Payment confirmation notifications
 
 #### ✅ Expense & Basic Finance
-- [ ] Expense categories setup
-- [ ] Expense entry with receipt upload
-- [ ] Bank account management
-- [ ] Basic income vs expense ledger
-- [ ] Monthly financial summary report
+- [x] Expense categories setup
+- [x] Expense entry with receipt upload & approval workflow
+- [x] Bank account management
+- [x] Basic income vs expense ledger
+- [x] Monthly financial summary report
 
 #### ✅ Notifications (Phase 1 Scope)
-- [ ] Invoice generated alert
-- [ ] Payment received confirmation
-- [ ] Payment overdue reminder (automated)
-- [ ] Receipt delivery via Email/SMS
+- [x] Invoice generated alert
+- [x] Payment received confirmation
+- [x] Payment overdue reminder (automated BullMQ)
+- [x] Receipt delivery via Email (SendGrid) / SMS (MSG91)
 
 #### ✅ Society 360° Dashboard (Basic)
-- [ ] Units & occupancy snapshot
-- [ ] Maintenance collected vs outstanding
-- [ ] Collection rate KPI
-- [ ] Recent transactions feed
-- [ ] Basic attention alerts (overdue invoices)
-- [ ] Quick actions (Generate invoices, Send reminders)
+- [x] Units & occupancy snapshot
+- [x] Maintenance collected vs outstanding
+- [x] Collection rate KPI
+- [x] Recent transactions feed
+- [x] Basic attention alerts (overdue invoices, approvals)
+- [x] Quick actions (Generate invoices, bulk queues)
 
 ---
 
