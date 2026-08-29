@@ -1,5 +1,5 @@
 import { NestFactory, Reflector } from '@nestjs/core';
-import { ValidationPipe, Logger, VersioningType } from '@nestjs/common';
+import { ValidationPipe, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import helmet from 'helmet';
@@ -10,7 +10,6 @@ import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
-    // Suppress NestJS default logs in production; use our LoggingInterceptor
     logger: ['error', 'warn', 'log', 'debug'],
   });
 
@@ -21,7 +20,6 @@ async function bootstrap() {
   const apiPrefix = configService.get<string>('API_PREFIX', 'api/v1');
 
   // ─── Security Headers ───────────────────────────────────────────────────
-  // Helmet sets X-Content-Type-Options, X-Frame-Options, HSTS, CSP, etc.
   app.use(
     helmet({
       contentSecurityPolicy: env === 'production' ? undefined : false,
@@ -30,31 +28,25 @@ async function bootstrap() {
 
   // ─── Global API Prefix ──────────────────────────────────────────────────
   app.setGlobalPrefix(apiPrefix, {
-    exclude: [], // All routes get the prefix, including /health
+    exclude: [],
   });
 
   // ─── Global Validation Pipe ─────────────────────────────────────────────
-  // - whitelist: strips properties not in DTO
-  // - forbidNonWhitelisted: throws 400 if extra properties sent
-  // - transform: auto-converts types (e.g. "3" → 3)
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
       forbidNonWhitelisted: true,
       transform: true,
       transformOptions: { enableImplicitConversion: true },
-      stopAtFirstError: false, // Return ALL validation errors at once
+      stopAtFirstError: false,
     }),
   );
 
   // ─── Global Exception Filter ────────────────────────────────────────────
-  // Catches ALL thrown exceptions and wraps in consistent JSON error envelope.
-  // Shape: { success: false, statusCode, message, errors?, timestamp, path }
   const reflector = app.get(Reflector);
   app.useGlobalFilters(new HttpExceptionFilter());
 
   // ─── Global Interceptors ────────────────────────────────────────────────
-  // Order matters: Logging first (captures timing), then Transform (wraps response)
   app.useGlobalInterceptors(
     new LoggingInterceptor(),
     new TransformInterceptor(),
@@ -71,7 +63,6 @@ async function bootstrap() {
   });
 
   // ─── Swagger (API Documentation) ────────────────────────────────────────
-  // Available at /api/v1/docs in development only
   if (env !== 'production') {
     const swaggerConfig = new DocumentBuilder()
       .setTitle('🏛️ Society Management System — API')
@@ -89,17 +80,26 @@ async function bootstrap() {
           bearerFormat: 'JWT',
           description: 'Enter your access token from POST /auth/login',
         },
-        'access-token', // Security scheme name
+        'access-token',
       )
       .addTag('health', 'Liveness & readiness probes')
       .addTag('auth', 'Authentication — login, register, refresh, logout')
       .addTag('users', 'User account management')
+      .addTag('tenants', 'Platform-level tenant management (SUPER_ADMIN only)')
+      .addTag('societies', 'Housing society profiles & settings')
+      .addTag('structure', 'Society structure — Towers, Floors, and Units')
+      .addTag('residents', 'Resident & family management')
+      .addTag('maintenance', 'Maintenance heads, billing rules, late fees & invoices')
+      .addTag('payments', 'Payment processing & receipt generation')
+      .addTag('expenses', 'Expense tracking & financial ledger')
+      .addTag('notifications', 'System & in-app notifications')
+      .addTag('dashboard', 'Society 360° KPIs, alerts, and recent activity')
       .build();
 
     const document = SwaggerModule.createDocument(app, swaggerConfig);
     SwaggerModule.setup(`${apiPrefix}/docs`, app, document, {
       swaggerOptions: {
-        persistAuthorization: true, // Keep token between page refreshes
+        persistAuthorization: true,
         tagsSorter: 'alpha',
         operationsSorter: 'alpha',
       },
@@ -116,7 +116,6 @@ async function bootstrap() {
   logger.log(`🌍 Environment: ${env}`);
   logger.log(`🛡️  Global guards: ThrottlerGuard → JwtAuthGuard → RolesGuard`);
 
-  // Suppress the unused variable warning
   void reflector;
 }
 

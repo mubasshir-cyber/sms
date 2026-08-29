@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+import { BullModule } from '@nestjs/bullmq';
 import { APP_GUARD } from '@nestjs/core';
 import * as Joi from 'joi';
 
@@ -15,29 +16,15 @@ import { RolesGuard } from './common/guards/roles.guard';
 import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
 import { HealthModule } from './modules/health/health.module';
-// Phase 1 — coming next:
-// import { TenantsModule } from './modules/tenants/tenants.module';
-// import { SocietiesModule } from './modules/societies/societies.module';
-// import { ResidentsModule } from './modules/residents/residents.module';
-// import { MaintenanceModule } from './modules/maintenance/maintenance.module';
-// import { PaymentsModule } from './modules/payments/payments.module';
-// import { ExpensesModule } from './modules/expenses/expenses.module';
-// import { NotificationsModule } from './modules/notifications/notifications.module';
-// import { DashboardModule } from './modules/dashboard/dashboard.module';
-// Phase 2:
-// import { ComplaintsModule } from './modules/complaints/complaints.module';
-// import { VisitorsModule } from './modules/visitors/visitors.module';
-// import { SecurityModule } from './modules/security/security.module';
-// import { DeliveriesModule } from './modules/deliveries/deliveries.module';
-// import { StaffModule } from './modules/staff/staff.module';
-// import { AnnouncementsModule } from './modules/announcements/announcements.module';
-// import { VehiclesModule } from './modules/vehicles/vehicles.module';
-// Phase 3:
-// import { AmenitiesModule } from './modules/amenities/amenities.module';
-// import { VendorsModule } from './modules/vendors/vendors.module';
-// import { AssetsModule } from './modules/assets/assets.module';
-// import { DocumentsModule } from './modules/documents/documents.module';
-// import { MeetingsModule } from './modules/meetings/meetings.module';
+import { TenantsModule } from './modules/tenants/tenants.module';
+import { SocietiesModule } from './modules/societies/societies.module';
+import { StructureModule } from './modules/structure/structure.module';
+import { ResidentsModule } from './modules/residents/residents.module';
+import { MaintenanceModule } from './modules/maintenance/maintenance.module';
+import { PaymentsModule } from './modules/payments/payments.module';
+import { ExpensesModule } from './modules/expenses/expenses.module';
+import { NotificationsModule } from './modules/notifications/notifications.module';
+import { DashboardModule } from './modules/dashboard/dashboard.module';
 
 @Module({
   imports: [
@@ -59,11 +46,24 @@ import { HealthModule } from './modules/health/health.module';
         DB_DATABASE: Joi.string().required(),
         DB_SSL: Joi.boolean().default(false),
         DB_SYNCHRONIZE: Joi.boolean().default(false),
+        // Redis / BullMQ
+        REDIS_HOST: Joi.string().default('localhost'),
+        REDIS_PORT: Joi.number().default(6379),
         // JWT — min 32 chars enforced here
         JWT_SECRET: Joi.string().min(32).required(),
         JWT_EXPIRES_IN: Joi.string().default('15m'),
         JWT_REFRESH_SECRET: Joi.string().min(32).required(),
         JWT_REFRESH_EXPIRES_IN: Joi.string().default('7d'),
+        // Razorpay
+        RAZORPAY_KEY_ID: Joi.string().allow('', null).optional(),
+        RAZORPAY_KEY_SECRET: Joi.string().allow('', null).optional(),
+        RAZORPAY_MOCK: Joi.boolean().default(true),
+        // Email & SMS
+        SENDGRID_API_KEY: Joi.string().allow('', null).optional(),
+        EMAIL_FROM: Joi.string().default('noreply@societyms.app'),
+        MSG91_AUTH_KEY: Joi.string().allow('', null).optional(),
+        MSG91_SENDER_ID: Joi.string().default('SMSAPP'),
+        MSG91_TEMPLATE_ID: Joi.string().allow('', null).optional(),
         // CORS
         FRONTEND_URL: Joi.string().uri().default('http://localhost:3001'),
         GUARD_APP_URL: Joi.string().uri().default('http://localhost:3002'),
@@ -80,6 +80,18 @@ import { HealthModule } from './modules/health/health.module';
       useFactory: getDatabaseConfig,
     }),
 
+    // ─── BullMQ / Redis ──────────────────────────────────────────────────────
+    BullModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        connection: {
+          host: configService.get<string>('REDIS_HOST', 'localhost'),
+          port: configService.get<number>('REDIS_PORT', 6379),
+        },
+      }),
+    }),
+
     // ─── Rate Limiting ───────────────────────────────────────────────────────
     ThrottlerModule.forRootAsync({
       imports: [ConfigModule],
@@ -91,28 +103,34 @@ import { HealthModule } from './modules/health/health.module';
       }]),
     }),
 
-    // ─── Feature Modules ─────────────────────────────────────────────────────
-    HealthModule,   // GET /health — public liveness probe
-    AuthModule,     // POST /auth/* — login, register, refresh, logout
-    UsersModule,    // GET|POST|PATCH|DELETE /users
+    // ─── Feature Modules (Phase 1) ───────────────────────────────────────────
+    HealthModule,         // GET /health
+    AuthModule,           // POST /auth/*
+    UsersModule,          // /users
+    TenantsModule,        // /tenants
+    SocietiesModule,      // /societies
+    StructureModule,      // /societies/:societyId/towers, floors, units
+    ResidentsModule,      // /residents
+    MaintenanceModule,    // /maintenance/*, /maintenance/invoices/*
+    PaymentsModule,       // /payments/*
+    ExpensesModule,       // /expenses/*, /finance/*
+    NotificationsModule,  // /notifications/*
+    DashboardModule,      // /dashboard/*
   ],
 
   providers: [
     // ─── Global Guards ───────────────────────────────────────────────────────
-    // These apply to EVERY route automatically.
-    // Use @Public() to opt out of JWT check.
-    // Use @Roles(...) to restrict by role.
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,     // 1st: rate limiting
     },
     {
       provide: APP_GUARD,
-      useClass: JwtAuthGuard,       // 2nd: JWT authentication (@Public() bypasses)
+      useClass: JwtAuthGuard,       // 2nd: JWT authentication
     },
     {
       provide: APP_GUARD,
-      useClass: RolesGuard,         // 3rd: RBAC role check (@Roles() required)
+      useClass: RolesGuard,         // 3rd: RBAC role check
     },
   ],
 })
