@@ -94,6 +94,8 @@ async function bootstrap() {
       .addTag('expenses', 'Expense tracking & financial ledger')
       .addTag('notifications', 'System & in-app notifications')
       .addTag('dashboard', 'Society 360° KPIs, alerts, and recent activity')
+      .addTag('Complaints & Helpdesk', 'Complaints ticket lifecycle, SLA tracking, comments, escalation')
+      .addTag('Visitors & Security Gates', 'Gate management, guard shifts, visitor passes, logs, security incidents')
       .build();
 
     const document = SwaggerModule.createDocument(app, swaggerConfig);

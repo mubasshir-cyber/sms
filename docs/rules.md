@@ -220,12 +220,15 @@ async findInvoice(id: string): Promise<MaintenanceInvoice> {
 }
 ```
 
-### 4.3 Migration Rules
-- **Never use `synchronize: true` in any environment except local development**
-- Every schema change **must** have a corresponding migration file
-- Migration file names format: `{timestamp}-{PascalCaseDescription}.ts`
-- Always implement both `up()` and `down()` methods
-- Test `down()` migration (rollback) before merging
+### 4.3 Migration Rules (MANDATORY)
+> ⚠️ **CRITICAL RULE**: **EVERY single change to the database schema, entity definitions, table structures, columns, types, indexes, unique constraints, foreign keys, or enums MUST be executed through a TypeORM migration file.**
+>
+> - **NEVER rely on `synchronize: true`** — `synchronize` must remain disabled in production/staging environments.
+> - Whenever creating a new entity or modifying an existing entity, a matching migration file MUST be created in `src/database/migrations/`.
+> - Migration file names format: `{timestamp}-{PascalCaseDescription}.ts`
+> - Always implement both `up()` and `down()` methods with complete rollbacks.
+> - Ensure all enum values, default values, UUID generation, precision, and indexes in migration match the entity 1-to-1.
+> - Test both `npm run migration:run` and `npm run migration:revert` before merging.
 
 ```typescript
 // ✅ Migration file template

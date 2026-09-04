@@ -100,6 +100,36 @@ Three-phase rollout: Phase 1 (MVP/Cashflow) → Phase 2 (Ops/Security) → Phase
 
 ---
 
+## ✅ PHASE 2 MODULES — IN PROGRESS
+
+### 13. Complaints & Helpdesk Module (`/api/v1/complaints`) ✅
+- Entities: `Complaint`, `ComplaintComment`, `SlaConfig`
+- Enums: `ComplaintStatus` (open, assigned, in_progress, resolved, closed, escalated), `ComplaintPriority` (low/medium/high/critical), `ComplaintCategory` (10 categories)
+- Forward-only status transition enforcement via `COMPLAINT_STATUS_TRANSITIONS` map
+- Role-scoped queries: residents see own unit only; admins see all society complaints
+- Assignment with automatic SLA deadline calculation from `SlaConfig`
+- Comment threads with `isInternal` flag (hidden from residents)
+- Resident close + star rating (1–5) + feedback
+- BullMQ `sla-queue` with 30-minute repeatable job for auto-escalation
+- Escalation notifies society admin via `NotificationsService.send()`
+- Analytics endpoint: count by status/priority/category, avg resolution hours, escalated count
+- Migration: `1724000000003-CreateComplaints.ts`
+
+### 14. Visitor & Gate Management Module (`/api/v1/visitors`, `/api/v1/gates`, `/api/v1/security-incidents`) ✅
+- Entities: `Gate`, `GateAssignment`, `Visitor`, `VisitorLog`, `SecurityIncident`
+- Enums: `GateType`, `VisitorType`, `VisitorStatus`, `IncidentType`, `IncidentSeverity`, `IncidentStatus`
+- Physical gate CRUD & guard shift assignment
+- Resident pre-approved invitations with auto-generated 6-digit OTP passcode & QR token
+- Guard walk-in entry registration & instant host notification via `NotificationsService`
+- Guard verification endpoint `GET /visitors/verify/:code`
+- Entry/Exit logging in `visitor_logs` with gate timestamps, photo URLs, and vehicle numbers
+- Blacklisting system with entry rejection
+- Security incident & SOS panic alert reporting & resolution
+- Real-time visitor analytics (inside now, today entries, walk-in vs pre-approved)
+- Migration: `1724000000012-CreateVisitorsAndGates.ts`
+
+---
+
 ## 🏗️ KEY ARCHITECTURAL DECISIONS
 
 | Decision | Choice | Reason |
@@ -112,16 +142,14 @@ Three-phase rollout: Phase 1 (MVP/Cashflow) → Phase 2 (Ops/Security) → Phase
 | Background queues | BullMQ with Redis | Async invoice generation & decoupled notifications |
 | PDF generation | PDFKit via PdfService | Fast in-memory buffer generation for invoices and receipts |
 | CSV import | csv-parse in strict mode | Transactional integrity: prevents dirty partial imports |
+| Database & entity changes | Mandatory TypeORM migrations (`synchronize: false`) | Zero drift, production safety, auditability, reversible schema |
 | Gateways integration | Mock fallback mode (RAZORPAY_MOCK, SENDGRID_API_KEY, MSG91_AUTH_KEY) | Seamless local development without live API keys |
 
 ---
 
-## 🚀 NEXT PHASE: PHASE 2 (Operations, Security & Community)
+## 🚀 NEXT IN PHASE 2
 
-Modules to implement in Phase 2:
-1. **Complaints & Helpdesk Module** (`/complaints`) — Ticket lifecycle, SLA, categories, assignment
-2. **Visitor & Gate Management Module** (`/visitors`, `/gates`) — Guard app, pre-approved guests, OTP/QR entry
-3. **Delivery & Parcel Module** (`/deliveries`) — Delivery logging, pickup OTPs
-4. **Staff & Domestic Help Module** (`/staff`) — Daily help pass, attendance logs, background docs
-5. **Notice Board & Announcements Module** (`/announcements`) — Target audience notices, pinned posts
-6. **Vehicle & Parking Management Module** (`/vehicles`, `/parking`) — Slot allocation, RFID/number plate tracking
+1. **Delivery & Parcel Module** (`/deliveries`) — Delivery logging, pickup OTPs
+2. **Staff & Domestic Help Module** (`/staff`) — Daily help pass, attendance logs, background docs
+3. **Notice Board & Announcements Module** (`/announcements`) — Target audience notices, pinned posts
+4. **Vehicle & Parking Management Module** (`/vehicles`, `/parking`) — Slot allocation, RFID/number plate tracking

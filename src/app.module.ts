@@ -25,6 +25,8 @@ import { PaymentsModule } from './modules/payments/payments.module';
 import { ExpensesModule } from './modules/expenses/expenses.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
+import { ComplaintsModule } from './modules/complaints/complaints.module';
+import { VisitorsModule } from './modules/visitors/visitors.module';
 
 @Module({
   imports: [
@@ -116,6 +118,10 @@ import { DashboardModule } from './modules/dashboard/dashboard.module';
     ExpensesModule,       // /expenses/*, /finance/*
     NotificationsModule,  // /notifications/*
     DashboardModule,      // /dashboard/*
+
+    // ─── Feature Modules (Phase 2) ───────────────────────────────────────────
+    ComplaintsModule,     // /complaints/*
+    VisitorsModule,       // /visitors/*, /gates/*, /security-incidents/*
   ],
 
   providers: [

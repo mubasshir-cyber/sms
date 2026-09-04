@@ -178,26 +178,26 @@ Dashboard core         Complaints & gates       Complete analytics
 - [ ] Complaint analytics dashboard
 
 #### ✅ Visitor Management
-- [ ] Resident creates visitor invitation
-- [ ] System generates QR code + OTP
-- [ ] Security scans QR at gate
-- [ ] Visitor photo capture
-- [ ] Resident notification on visitor arrival
-- [ ] Walk-in visitor entry (manual)
-- [ ] Entry & exit time logging
-- [ ] Visitor vehicle tracking
-- [ ] Frequent visitor / whitelist
-- [ ] Blacklist management
-- [ ] Visitor analytics (daily/weekly/monthly)
-- [ ] Gate-wise logs
+- [x] Resident creates visitor invitation
+- [x] System generates QR code + OTP
+- [x] Security scans QR at gate
+- [x] Visitor photo capture
+- [x] Resident notification on visitor arrival
+- [x] Walk-in visitor entry (manual)
+- [x] Entry & exit time logging
+- [x] Visitor vehicle tracking
+- [x] Frequent visitor / whitelist
+- [x] Blacklist management
+- [x] Visitor analytics (daily/weekly/monthly)
+- [x] Gate-wise logs
 
 #### ✅ Security & Gates
-- [ ] Gate management (Main / Back / Emergency)
-- [ ] Guard assignment to gates
-- [ ] Shift management
-- [ ] Emergency / SOS alert system
-- [ ] Security incident log
-- [ ] Overnight visitor tracking
+- [x] Gate management (Main / Back / Emergency)
+- [x] Guard assignment to gates
+- [x] Shift management
+- [x] Emergency / SOS alert system
+- [x] Security incident log
+- [x] Overnight visitor tracking
 
 #### ✅ Delivery Management
 - [ ] Delivery logging at gate (courier, food, ecommerce)

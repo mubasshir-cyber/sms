@@ -251,6 +251,17 @@ PostgreSQL Database: sms_production
 └── gates                   # Gate definitions
 ```
 
+### Database Migration Strategy (Strictly Enforced)
+
+> ⚠️ **MANDATORY POLICY**:
+> - **Zero Schema Drift / Zero Synchronize**: `synchronize` is strictly disabled (`false`) across all non-scratch environments.
+> - **Every Database Change via Migration**: Any change to tables, columns, indexes, foreign keys, constraints, or enums **MUST** be made through a TypeORM migration file in `src/database/migrations/`.
+> - **Entity ↔ Migration Parity**: Whenever an entity is added or modified, a matching migration with both `up()` and `down()` methods must be created and verified before deployment.
+> - Migration CLI commands:
+>   - `npm run migration:run` — Applies all pending migrations
+>   - `npm run migration:revert` — Reverts the last migration
+>   - `npm run migration:show` — Displays migration history and status
+
 ### Entity Base Class
 
 All entities extend `BaseEntity`:
