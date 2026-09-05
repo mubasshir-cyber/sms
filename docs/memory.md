@@ -128,6 +128,53 @@ Three-phase rollout: Phase 1 (MVP/Cashflow) → Phase 2 (Ops/Security) → Phase
 - Real-time visitor analytics (inside now, today entries, walk-in vs pre-approved)
 - Migration: `1724000000012-CreateVisitorsAndGates.ts`
 
+### 15. Delivery & Parcel Management Module (`/api/v1/deliveries`) ✅
+- Entities: `Delivery`
+- Enums: `DeliveryType` (courier, food, ecommerce, grocery, documents, medicine, other), `DeliveryStatus` (pending_pickup, delivered_to_unit, collected, returned, cancelled)
+- Guard delivery logging at gate with package photo URL, courier company, and recipient unit
+- Auto-generation of secure 6-digit pickup OTP / resident passcodes
+- Immediate notification to unit residents upon package arrival (In-App / SMS / Email)
+- Resident pre-approval pass creation
+- Role-scoped queries: residents see only their unit's deliveries; guards and admins see society-wide with phone number privacy masking
+- Pickup verification endpoint: `POST /deliveries/:id/verify-otp` and collection handover `POST /deliveries/:id/collect`
+- Direct access permission (`POST /deliveries/:id/allow-entry`) for food/grocery delivery partners
+- BullMQ `deliveries` queue with 1-hour repeatable job scanning for unattended packages (> 24 hours at gate) and triggering reminders
+- Gate delivery analytics (today total, pending pickup, collected today, direct entry, breakdown by type)
+- Migration: `1724000000013-CreateDeliveries.ts`
+
+### 16. Staff & Domestic Help Module (`/api/v1/staff`) ✅
+- Entities: `StaffMember`, `StaffAttendance`, `StaffShift`, `StaffLeave`, `StaffTask`
+- Enums: `StaffType` (11 types incl. `domestic_help`), `ShiftType`, `StaffStatus`, `AttendanceStatus`, `LeaveType`, `LeaveStatus`
+- Auto-generated `staffCode` (`STF-YYYY-NNNN`) on profile creation
+- Aadhaar number stored for admin; masked (`XXXX-XXXX-1234`) in all API responses
+- `isDomesticHelp` flag cleanly distinguishes full-time employees from part-time domestic helpers
+- Background document storage: Police Verification, Aadhaar doc, ID proof URLs
+- Daily attendance marking by Security Guards OR Facility Managers with optional gate reference
+- Bulk attendance endpoint: guard marks all shift staff at once (`POST /staff/attendance/bulk`)
+- Full shift schedule CRUD with `effectiveFrom`/`effectiveTo` dates
+- Leave lifecycle: apply → pending → approve/reject with duplicate-date guards and notification
+- Work task assignment with completion tracking and completion notes
+- Staff KPI dashboard: active count, domestic help count, today's present/absent/on-leave, pending leaves, open tasks, breakdown by type
+- Society-wide attendance report grouped by date with present/absent/halfDay/onLeave aggregates
+- NotificationsService integration: LEAVE_REQUEST, LEAVE_APPROVED, LEAVE_REJECTED events
+- RBAC: Admin/FacilityManager = full access; SecurityGuard = attendance only; CommitteeMember = read-only
+- 25 unit tests (service + controller)
+- Migration: `1724000000014-CreateStaff.ts`
+
+### 17. Notice Board & Announcements Module (`/api/v1/announcements`) ✅
+- Entities: `Announcement`, `AnnouncementRead`
+- Enums: `AnnouncementType` (9 types incl. water_shutdown, electricity_shutdown, emergency, circular), `AnnouncementStatus` (draft, scheduled, published, archived), `AnnouncementPriority` (low, normal, high, urgent), `AnnouncementTargetScope` (society, tower, floor, unit, role_group), `AnnouncementTargetRole`
+- Draft creation with HTML sanitization (`sanitize-html`) allowing safe markup & attributes
+- Immediate publish or scheduled publish via BullMQ (`announcements` queue) with delayed jobs
+- Daily 2:00 AM archive sweep job via BullMQ job scheduler for auto-expiring announcements
+- Read tracking with per-user read receipt & idempotent read marking (`POST /announcements/:id/read`)
+- Real-time unread badge count (`GET /announcements/unread-count`)
+- Pin/unpin priority notice board features (`PATCH /announcements/:id/pin`)
+- Role-scoped feed queries (residents see published only; pinned items ordered first)
+- NotificationsService integration: automated broadcast on announcement publishing
+- 30 unit tests (service + controller)
+- Migration: `1724000000015-CreateAnnouncements.ts`
+
 ---
 
 ## 🏗️ KEY ARCHITECTURAL DECISIONS
@@ -149,7 +196,8 @@ Three-phase rollout: Phase 1 (MVP/Cashflow) → Phase 2 (Ops/Security) → Phase
 
 ## 🚀 NEXT IN PHASE 2
 
-1. **Delivery & Parcel Module** (`/deliveries`) — Delivery logging, pickup OTPs
-2. **Staff & Domestic Help Module** (`/staff`) — Daily help pass, attendance logs, background docs
-3. **Notice Board & Announcements Module** (`/announcements`) — Target audience notices, pinned posts
-4. **Vehicle & Parking Management Module** (`/vehicles`, `/parking`) — Slot allocation, RFID/number plate tracking
+1. ~~**Notice Board & Announcements Module** (`/announcements`)~~ ✅ Complete
+2. **Vehicle & Parking Management Module** (`/vehicles`, `/parking`) — Slot allocation, RFID/number plate tracking
+3. **Facility & Amenity Booking Module** (`/facilities`, `/bookings`) — Slot booking, hourly/daily rates, cancellation policy
+
+

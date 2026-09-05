@@ -96,6 +96,9 @@ async function bootstrap() {
       .addTag('dashboard', 'Society 360° KPIs, alerts, and recent activity')
       .addTag('Complaints & Helpdesk', 'Complaints ticket lifecycle, SLA tracking, comments, escalation')
       .addTag('Visitors & Security Gates', 'Gate management, guard shifts, visitor passes, logs, security incidents')
+      .addTag('Deliveries & Parcels', 'Gate delivery logging, OTP pickup verification, handover, unattended alerts')
+      .addTag('Staff & Domestic Help', 'Staff profiles, attendance, shifts, leave management, work task assignment')
+      .addTag('Notice Board & Announcements', 'Publish society notices, circulars, emergency alerts with targeted audience and scheduled delivery')
       .build();
 
     const document = SwaggerModule.createDocument(app, swaggerConfig);

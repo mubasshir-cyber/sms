@@ -27,6 +27,9 @@ import { NotificationsModule } from './modules/notifications/notifications.modul
 import { DashboardModule } from './modules/dashboard/dashboard.module';
 import { ComplaintsModule } from './modules/complaints/complaints.module';
 import { VisitorsModule } from './modules/visitors/visitors.module';
+import { DeliveriesModule } from './modules/deliveries/deliveries.module';
+import { StaffModule } from './modules/staff/staff.module';
+import { AnnouncementsModule } from './modules/announcements/announcements.module';
 
 @Module({
   imports: [
@@ -122,6 +125,9 @@ import { VisitorsModule } from './modules/visitors/visitors.module';
     // ─── Feature Modules (Phase 2) ───────────────────────────────────────────
     ComplaintsModule,     // /complaints/*
     VisitorsModule,       // /visitors/*, /gates/*, /security-incidents/*
+    DeliveriesModule,     // /deliveries/*
+    StaffModule,          // /staff/*
+    AnnouncementsModule,  // /announcements/*
   ],
 
   providers: [
