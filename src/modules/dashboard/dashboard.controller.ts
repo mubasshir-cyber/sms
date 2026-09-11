@@ -1,4 +1,4 @@
-import { Controller, Get, Query, ParseIntPipe, BadRequestException } from '@nestjs/common';
+import { Controller, Get, Query, BadRequestException } from '@nestjs/common';
 import { DashboardService } from './dashboard.service';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
@@ -20,6 +20,12 @@ export class DashboardController {
   @Roles(Role.SUPER_ADMIN, Role.SOCIETY_ADMIN, Role.ACCOUNTANT, Role.COMMITTEE_MEMBER)
   getSummary(@CurrentUser() user: AuthUser) {
     return this.dashboardService.getSummary(this.resolveSocietyId(user));
+  }
+
+  @Get('operations')
+  @Roles(Role.SUPER_ADMIN, Role.SOCIETY_ADMIN, Role.ACCOUNTANT, Role.COMMITTEE_MEMBER)
+  getOperations(@CurrentUser() user: AuthUser) {
+    return this.dashboardService.getOperationsSummary(this.resolveSocietyId(user));
   }
 
   @Get('alerts')

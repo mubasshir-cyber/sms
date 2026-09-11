@@ -173,7 +173,50 @@ Three-phase rollout: Phase 1 (MVP/Cashflow) → Phase 2 (Ops/Security) → Phase
 - Role-scoped feed queries (residents see published only; pinned items ordered first)
 - NotificationsService integration: automated broadcast on announcement publishing
 - 30 unit tests (service + controller)
-- Migration: `1724000000015-CreateAnnouncements.ts`
+### 18. Vehicle & Parking Management Module (`/api/v1/vehicles`, `/api/v1/parking`) ✅
+- Entities: `Vehicle`, `ParkingSlot`, `ParkingAllocation`, `ParkingTransfer`
+- Enums: `VehicleType`, `VehicleVerificationStatus`, `ParkingSlotType`, `ParkingSlotStatus`, `AllocationType`, `TransferStatus`
+- Resident vehicle registration (car, bike, bicycle, EV, other) with plate normalization (`MH02AB1234`)
+- Document uploads (RC, Insurance) and insurance expiry tracking
+- Admin verification workflow (`PATCH /vehicles/:id/verify`) with rejection reasons & in-app notification to resident
+- Security Guard plate/RFID/Fastag lookup endpoint (`GET /vehicles/lookup/:identifier`)
+- Parking slot inventory management with single & bulk creation (`POST /parking/slots/bulk`)
+- Slot allocation to units/vehicles with primary, additional, and temporary allocation types
+- Resident slot transfer workflow with Committee approval lifecycle (`POST /parking/transfers`, `PATCH /parking/transfers/:id/action`)
+- Gate visitor parking assignment & instant release (`POST /parking/visitor/assign`, `PATCH /parking/visitor/:slotId/release`)
+- Parking availability & vehicle verification KPI dashboard (`GET /parking/analytics`)
+- 24 unit tests (service + controller, 100% pass)
+- Migration: `1724000000016-CreateVehiclesAndParking.ts`
+
+### 19. Facility & Amenity Booking Module (`/api/v1/facilities`, `/api/v1/bookings`) ✅
+- Entities: `Facility`, `FacilityBooking`, `FacilityBookingStatusHistory`
+- Enums: `FacilityType`, `CapacityType` (`exclusive`, `shared`), `BookingStatus`, `BookingSlotType`
+- Transactional booking creation with pessimistic write locking on facility row to eliminate concurrent double-booking
+- Shared vs Exclusive capacity models: single-occupant exclusive spaces (party hall, badminton) vs multi-occupant shared amenities (swimming pool, gym)
+- Real-time availability calculation engine (`GET /facilities/:id/availability`)
+- Fair-usage rules: monthly unit quota (excluding cancelled/rejected), advance booking limit, cancellation cut-off hours
+- Immutable status audit history (`facility_booking_status_history`) tracking all status changes
+- Approval & rejection lifecycle with in-app notifications
+- Booking cancellation workflow with refund policy checks
+- Facility revenue & utilization analytics excluding cancelled/rejected bookings
+- 21 unit tests (service + controller, 100% pass)
+- Migration: `1724000000017-CreateFacilitiesAndBookings.ts`
+
+### 20. Society 360° Dashboard Expansion (`/api/v1/dashboard`) ✅
+- Comprehensive operational widgets aggregated across Phase 1 and Phase 2 modules
+- Injected Repositories: `Unit`, `Invoice`, `Payment`, `Expense`, `Complaint`, `VisitorLog`, `Delivery`, `StaffAttendance`, `ParkingSlot`, `FacilityBooking`
+- Endpoints:
+  - `GET /dashboard/summary`: Financial health, units occupancy, collection metrics, plus embedded operations overview
+  - `GET /dashboard/operations`: Operational widgets:
+    - Complaints KPI: Open, In-progress, Escalated, Resolved today, SLA-breached count
+    - Gate & Visitor KPI: Checked-in today, Currently inside society
+    - Deliveries KPI: Arrived today, Pending pickup at gate, Unattended overdue (>24h)
+    - Staff Attendance KPI: Present today, On-leave or absent today
+    - Parking Utilization: Total slots, Allocated count, Available count, Occupancy rate %
+    - Amenities KPI: Bookings today, Pending approvals count, Month-to-date amenity revenue
+  - `GET /dashboard/alerts`: Actionable alerts center (Overdue invoices, Vacant units, Pending expense approvals, SLA-breached complaints, Unattended parcels, Pending booking approvals, and Total actionable count)
+  - `GET /dashboard/recent-activity`: Multi-module activity stream unifying Payments, Expenses, Helpdesk tickets, Gate deliveries, Amenity bookings, and Visitor entries sorted chronologically
+- 10 unit tests across `DashboardService` and `DashboardController` (100% pass)
 
 ---
 
@@ -191,13 +234,23 @@ Three-phase rollout: Phase 1 (MVP/Cashflow) → Phase 2 (Ops/Security) → Phase
 | CSV import | csv-parse in strict mode | Transactional integrity: prevents dirty partial imports |
 | Database & entity changes | Mandatory TypeORM migrations (`synchronize: false`) | Zero drift, production safety, auditability, reversible schema |
 | Gateways integration | Mock fallback mode (RAZORPAY_MOCK, SENDGRID_API_KEY, MSG91_AUTH_KEY) | Seamless local development without live API keys |
+| Concurrency & Overlap | Pessimistic write locking inside DB transactions | Eliminates double-booking race conditions |
+| Audit trails | Dedicated history entities (`FacilityBookingStatusHistory`) | Immutable tracking of state transitions |
+| Real-time 360° Dashboard | Multi-repository aggregation with indexed time-window queries | Instant operational visibility across gates, helpdesk, staff, amenities, and finances |
 
 ---
 
-## 🚀 NEXT IN PHASE 2
+## 🚀 NEXT IN ROADMAP
 
 1. ~~**Notice Board & Announcements Module** (`/announcements`)~~ ✅ Complete
-2. **Vehicle & Parking Management Module** (`/vehicles`, `/parking`) — Slot allocation, RFID/number plate tracking
-3. **Facility & Amenity Booking Module** (`/facilities`, `/bookings`) — Slot booking, hourly/daily rates, cancellation policy
+2. ~~**Vehicle & Parking Management Module** (`/vehicles`, `/parking`)~~ ✅ Complete
+3. ~~**Facility & Amenity Booking Module** (`/facilities`, `/bookings`)~~ ✅ Complete
+4. ~~**Society 360° Dashboard Expansion** (`/dashboard`)~~ ✅ Complete
+5. **Phase 3: Vendor Management Module** (`/api/v1/vendors`) — Vendor profiles, contracts, AMC schedules, invoice tracking, performance ratings
+6. **Phase 3: Asset Management Module** (`/api/v1/assets`) — Asset register, maintenance schedules, depreciation, QR tagging
+7. **Phase 3: Documents & Records** (`/api/v1/documents`) — Central document repository, folder hierarchy, expiry alerts
+8. **Phase 3: Meetings & Governance** (`/api/v1/meetings`, `/api/v1/voting`) — AGM / Committee meetings, resolutions, digital voting
+
+
 
 

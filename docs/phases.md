@@ -156,26 +156,26 @@ Dashboard core         Complaints & gates       Complete analytics
 ### Phase 2 — Feature Detail
 
 #### ✅ Vehicles & Parking
-- [ ] Vehicle registration (car, bike, bicycle, EV)
-- [ ] Parking slot inventory management
-- [ ] Parking allocation to units
-- [ ] Visitor parking management
-- [ ] Parking availability dashboard
-- [ ] Parking transfer workflow
-- [ ] Vehicle verification by admin
+- [x] Vehicle registration (car, bike, bicycle, EV)
+- [x] Parking slot inventory management
+- [x] Parking allocation to units
+- [x] Visitor parking management
+- [x] Parking availability dashboard
+- [x] Parking transfer workflow
+- [x] Vehicle verification by admin
 
 #### ✅ Complaints & Helpdesk
-- [ ] Complaint creation with photo/video
-- [ ] Category management (10 default categories)
-- [ ] Priority levels (Low / Medium / High / Critical)
-- [ ] Staff assignment & reassignment
-- [ ] Status workflow: Open → Assigned → WIP → Resolved
-- [ ] Comment thread per complaint
-- [ ] SLA configuration per category
-- [ ] Auto-escalation on SLA breach
-- [ ] Resident resolution confirmation
-- [ ] Star rating & feedback collection
-- [ ] Complaint analytics dashboard
+- [x] Complaint creation with photo/video
+- [x] Category management (10 default categories)
+- [x] Priority levels (Low / Medium / High / Critical)
+- [x] Staff assignment & reassignment
+- [x] Status workflow: Open → Assigned → WIP → Resolved
+- [x] Comment thread per complaint
+- [x] SLA configuration per category
+- [x] Auto-escalation on SLA breach
+- [x] Resident resolution confirmation
+- [x] Star rating & feedback collection
+- [x] Complaint analytics dashboard
 
 #### ✅ Visitor Management
 - [x] Resident creates visitor invitation
@@ -200,29 +200,29 @@ Dashboard core         Complaints & gates       Complete analytics
 - [x] Overnight visitor tracking
 
 #### ✅ Delivery Management
-- [ ] Delivery logging at gate (courier, food, ecommerce)
-- [ ] Delivery photo capture
-- [ ] Push notification to resident: "📦 Package received at Gate 1"
-- [ ] Resident collection acknowledgement
-- [ ] Pending vs collected status
-- [ ] Unattended delivery alerts (after 24 hrs)
-- [ ] Delivery history per unit
+- [x] Delivery logging at gate (courier, food, ecommerce)
+- [x] Delivery photo capture
+- [x] Push notification to resident: "📦 Package received at Gate 1"
+- [x] Resident collection acknowledgement
+- [x] Pending vs collected status
+- [x] Unattended delivery alerts (after 24 hrs)
+- [x] Delivery history per unit
 
 #### ✅ Staff Management
-- [ ] Staff profile & document management
-- [ ] Attendance tracking (manual / biometric-ready)
-- [ ] Shift schedule management
-- [ ] Leave application & approval
-- [ ] Basic salary structure
-- [ ] Work assignment & task tracking
+- [x] Staff profile & document management
+- [x] Attendance tracking (manual / biometric-ready)
+- [x] Shift schedule management
+- [x] Leave application & approval
+- [x] Basic salary structure
+- [x] Work assignment & task tracking
 
 #### ✅ Announcements
-- [ ] Create announcements (rich text + attachments)
-- [ ] Target: Society / Tower / Floor / Unit / Role
-- [ ] Scheduled announcements
-- [ ] Pinned / priority announcements
-- [ ] Read / acknowledgement tracking
-- [ ] Announcement archive
+- [x] Create announcements (rich text + attachments)
+- [x] Target: Society / Tower / Floor / Unit / Role
+- [x] Scheduled announcements
+- [x] Pinned / priority announcements
+- [x] Read / acknowledgement tracking
+- [x] Announcement archive
 
 #### ✅ Notifications (Phase 2 Expansion)
 - [ ] Push notifications (mobile app)
@@ -234,12 +234,12 @@ Dashboard core         Complaints & gates       Complete analytics
 - [ ] User notification preferences
 
 #### ✅ Society 360° Dashboard (Expanded)
-- [ ] Complaints / SLA KPI widget
-- [ ] Visitors today widget
-- [ ] Deliveries today widget
-- [ ] Security activity snapshot
-- [ ] Staff attendance summary
-- [ ] SLA breach alerts in Attention panel
+- [x] Complaints / SLA KPI widget
+- [x] Visitors today widget
+- [x] Deliveries today widget
+- [x] Security activity snapshot
+- [x] Staff attendance summary
+- [x] SLA breach alerts in Attention panel
 
 ---
 
@@ -276,15 +276,15 @@ Dashboard core         Complaints & gates       Complete analytics
 ### Phase 3 — Feature Detail
 
 #### ✅ Facilities & Amenities
-- [ ] Amenity profile setup (capacity, location, rules, images)
-- [ ] Time-slot management
-- [ ] Online booking by residents
-- [ ] Booking calendar view
-- [ ] Booking cancellation & refund
-- [ ] Booking fees & payment integration
-- [ ] Per-unit booking limits (per month)
-- [ ] Admin approval workflow (optional)
-- [ ] Amenity usage analytics
+- [x] Amenity profile setup (capacity, location, rules, images)
+- [x] Time-slot management
+- [x] Online booking by residents
+- [x] Booking calendar view
+- [x] Booking cancellation & refund
+- [x] Booking fees & payment integration
+- [x] Per-unit booking limits (per month)
+- [x] Admin approval workflow (optional)
+- [x] Amenity usage analytics
 
 #### ✅ Vendor Management
 - [ ] Vendor profile & contact directory

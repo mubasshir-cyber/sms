@@ -1,4 +1,4 @@
-import { PartialType } from '@nestjs/mapped-types';
+import { PartialType } from '@nestjs/swagger';
 import { CreateTenantDto } from './create-tenant.dto';
 import { IsBoolean, IsOptional } from 'class-validator';
 

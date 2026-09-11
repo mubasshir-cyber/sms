@@ -6,7 +6,7 @@ import {
   Logger,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Between, MoreThanOrEqual, LessThanOrEqual } from 'typeorm';
+import { Repository, Between, MoreThanOrEqual, LessThanOrEqual, IsNull } from 'typeorm';
 import { Gate } from './entities/gate.entity';
 import { GateAssignment } from './entities/gate-assignment.entity';
 import { Visitor } from './entities/visitor.entity';
@@ -361,7 +361,7 @@ export class VisitorsService {
 
     // Find latest active log entry without exit timestamp
     const log = await this.logsRepo.findOne({
-      where: { visitorId: visitor.id, checkedOutAt: null as any },
+      where: { visitorId: visitor.id, checkedOutAt: IsNull() },
       order: { checkedInAt: 'DESC' },
     });
 

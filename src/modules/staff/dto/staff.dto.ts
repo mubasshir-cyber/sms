@@ -14,6 +14,8 @@ import {
   IsEmail,
   Matches,
   IsPositive,
+  IsArray,
+  ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
@@ -338,6 +340,8 @@ export class RecordBulkAttendanceDto {
   gateId?: string;
 
   @ApiProperty({ type: [BulkAttendanceItemDto] })
+  @IsArray()
+  @ValidateNested({ each: true })
   @Type(() => BulkAttendanceItemDto)
   records: BulkAttendanceItemDto[];
 }

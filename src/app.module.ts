@@ -30,6 +30,11 @@ import { VisitorsModule } from './modules/visitors/visitors.module';
 import { DeliveriesModule } from './modules/deliveries/deliveries.module';
 import { StaffModule } from './modules/staff/staff.module';
 import { AnnouncementsModule } from './modules/announcements/announcements.module';
+import { VehiclesModule } from './modules/vehicles/vehicles.module';
+import { FacilitiesModule } from './modules/facilities/facilities.module';
+import { VendorsModule } from './modules/vendors/vendors.module';
+import { AssetsModule } from './modules/assets/assets.module';
+import { DocumentsModule } from './modules/documents/documents.module';
 
 @Module({
   imports: [
@@ -128,6 +133,13 @@ import { AnnouncementsModule } from './modules/announcements/announcements.modul
     DeliveriesModule,     // /deliveries/*
     StaffModule,          // /staff/*
     AnnouncementsModule,  // /announcements/*
+    VehiclesModule,       // /vehicles/*, /parking/*
+    FacilitiesModule,     // /facilities/*, /bookings/*
+
+    // ─── Feature Modules (Phase 3) ───────────────────────────────────────────
+    VendorsModule,        // /vendors/*
+    AssetsModule,         // /assets/*
+    DocumentsModule,      // /documents/*
   ],
 
   providers: [

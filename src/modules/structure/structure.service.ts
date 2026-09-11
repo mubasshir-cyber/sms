@@ -264,27 +264,28 @@ export class StructureService {
       throw new BadRequestException({ message: 'CSV validation failed', errors });
     }
 
-    // Build all units in memory first
-    const units: Unit[] = [];
-    for (const builder of unitBuilders) {
-      units.push(await builder());
-    }
+    // Save all floors and units within an isolated atomic database transaction
+    const saved = await this.unitsRepo.manager.transaction(async (manager) => {
+      const units: Unit[] = [];
+      for (const builder of unitBuilders) {
+        units.push(await builder());
+      }
 
-    // Re-check errors from duplicate checks in builder phase
-    if (errors.length > 0) {
-      throw new BadRequestException({ message: 'CSV validation failed', errors });
-    }
+      if (errors.length > 0) {
+        throw new BadRequestException({ message: 'CSV validation failed', errors });
+      }
 
-    // Save all in one batch
-    const saved = await this.unitsRepo.save(units);
+      const savedUnits = await manager.save(Unit, units);
 
-    // Update society unit count
-    await this.unitsRepo.manager
-      .createQueryBuilder()
-      .update('societies')
-      .set({ totalUnits: () => `total_units + ${saved.length}` })
-      .where('id = :id', { id: societyId })
-      .execute();
+      await manager
+        .createQueryBuilder()
+        .update('societies')
+        .set({ totalUnits: () => `total_units + ${savedUnits.length}` })
+        .where('id = :id', { id: societyId })
+        .execute();
+
+      return savedUnits;
+    });
 
     this.logger.log(`Bulk imported ${saved.length} units into society ${societyId}`);
     return { imported: saved.length, rows: saved };

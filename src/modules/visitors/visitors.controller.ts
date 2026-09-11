@@ -219,6 +219,15 @@ export class VisitorsController {
   // ═══════════════════════════════════════════════════════════════════════════
 
   @Post('security-incidents')
+  @Roles(
+    Role.SUPER_ADMIN,
+    Role.SOCIETY_ADMIN,
+    Role.FACILITY_MANAGER,
+    Role.COMMITTEE_MEMBER,
+    Role.SECURITY_GUARD,
+    Role.RESIDENT,
+    Role.TENANT,
+  )
   @ApiOperation({ summary: 'Report security incident or trigger SOS Panic Alert (All users)' })
   @ApiResponse({ status: 201, description: 'Security incident logged' })
   async createIncident(@CurrentUser() user: AuthUser, @Body() dto: CreateIncidentDto) {

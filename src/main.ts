@@ -99,6 +99,11 @@ async function bootstrap() {
       .addTag('Deliveries & Parcels', 'Gate delivery logging, OTP pickup verification, handover, unattended alerts')
       .addTag('Staff & Domestic Help', 'Staff profiles, attendance, shifts, leave management, work task assignment')
       .addTag('Notice Board & Announcements', 'Publish society notices, circulars, emergency alerts with targeted audience and scheduled delivery')
+      .addTag('Vehicles & Parking', 'Vehicle inventory, RFID/plate verification, slot allocation, visitor parking, slot transfer')
+      .addTag('Facilities & Amenities', 'Amenity catalog, slot availability, booking reservations, approval workflows, usage analytics')
+      .addTag('Vendors & Contracts', 'Third-party vendor directory, AMC schedules, service agreements, invoices & performance reviews')
+      .addTag('Assets', 'Society asset register, warranty & AMC tracking, maintenance logs, depreciation, and disposal workflows')
+      .addTag('Documents & Records', 'Society document repository with version control, access levels, expiry tracking, and audit trail')
       .build();
 
     const document = SwaggerModule.createDocument(app, swaggerConfig);

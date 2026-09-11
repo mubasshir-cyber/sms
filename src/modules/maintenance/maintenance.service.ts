@@ -180,9 +180,10 @@ export class MaintenanceService {
         } else if (rule.ruleType === BillingRuleType.PER_SQFT) {
           amount = Number(rule.amount) * (unit.sqFt ?? 0);
         }
+        amount = Math.round(amount * 100) / 100;
 
         lineItems.push({ headId: rule.headId, headName: head.name, amount });
-        subtotal += amount;
+        subtotal = Math.round((subtotal + amount) * 100) / 100;
       }
 
       if (lineItems.length === 0) { skipped++; continue; }

@@ -7,7 +7,6 @@ import {
   CreateExpenseDto, UpdateExpenseDto,
   CreateBankAccountDto, UpdateBankAccountDto,
 } from './dto/expense.dto';
-import { InjectRepository as IR } from '@nestjs/typeorm';
 
 @Injectable()
 export class ExpensesService {
